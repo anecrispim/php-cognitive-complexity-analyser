@@ -1,26 +1,32 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { ComplexityAnalyser } from './ComplexityAnalyser';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+    console.log('PHP Cognitive Complexity Analyzer extension is active.');
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "php-cognitive-complexity-analyser" is now active!');
+	// Registrar o comando de análise de complexidade
+    let disposable = vscode.commands.registerCommand('extension.analyzeComplexity', () => {
+        vscode.window.showInformationMessage('ativada');
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            vscode.window.showErrorMessage('No active text editor!');
+            return;
+        }
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('php-cognitive-complexity-analyser.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from PHPCognitiveComplexityAnalyser!');
-	});
+        const phpCode = editor.document.getText();
 
-	context.subscriptions.push(disposable);
+        const complexityAnalyzer = new ComplexityAnalyser();
+        const ast = complexityAnalyzer.getAST(phpCode);
+
+        // Exibe a AST no console para debug
+        console.log(JSON.stringify(ast, null, 2));
+    });
+
+    // Adicionar o comando ao contexto
+    context.subscriptions.push(disposable);
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+    console.log('The PHP Cognitive Complexity Analyzer extension has been disabled.');
+}
+
