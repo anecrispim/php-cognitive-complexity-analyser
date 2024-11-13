@@ -1,0 +1,67 @@
+{
+    "totalFileComplexity": {
+      "description": "Complexidade cognitiva total máxima permitida para um arquivo PHP.",
+      "maxComplexity": 50,
+      "indices": {
+        "controlStructureComplexity": {
+          "description": "Complexidade máxima permitida para estruturas de controle (if, for, while, switch).",
+          "maxComplexity": 3,
+          "weights": {
+            "if": 1,
+            "for": 2,
+            "while": 2,
+            "switch": 3
+          }
+        },
+        "tryCatchComplexity": {
+          "description": "Complexidade máxima permitida para blocos try-catch.",
+          "maxComplexity": 5,
+          "weights": {
+            "try": 3,
+            "catch": 2
+          }
+        },
+        "inheritanceComplexity": {
+          "description": "Complexidade máxima permitida para herança de classes.",
+          "maxComplexity": 3,
+          "weights": {
+            "class": 2,
+            "interface": 2
+          }
+        },
+        "functionComplexity": {
+          "description": "Complexidade máxima permitida para funções.",
+          "maxComplexity": 5,
+          "weights": {
+            "function": 1,
+            "parameters": 0.5,
+            "return": 0.5
+          }
+        },
+        "methodComplexity": {
+          "description": "Complexidade máxima permitida para métodos dentro de uma classe.",
+          "maxComplexity": 5,
+          "weights": {
+            "method": 1,
+            "parameters": 0.5,
+            "return": 0.5,
+            "visibility": {
+              "public": 1,
+              "protected": 0.5,
+              "private": 0.5
+            }
+          }
+        },
+        "expressionComplexity": {
+          "description": "Complexidade associada a expressões complexas, como ternários e operadores lógicos.",
+          "maxComplexity": 2,
+          "weights": {
+            "ternary": 1,
+            "logicalOperators": 0.5,
+            "arithmeticOperators": 0.3
+          }
+        }
+      }
+    }
+  }
+  

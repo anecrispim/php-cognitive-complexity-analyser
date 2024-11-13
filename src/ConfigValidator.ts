@@ -1,0 +1,52 @@
+import * as vscode from 'vscode';
+import * as fs from 'fs';
+import * as path from 'path';
+
+interface ComplexityConfig {
+    totalFileComplexity: {
+        maxComplexity: number;
+        indices: {
+            [key: string]: {
+                maxComplexity: number;
+                weights: { [key: string]: number | { [subKey: string]: number } };
+            };
+        };
+    };
+}
+
+export class ConfigValidator {
+    private defaultConfig: ComplexityConfig | null = null;
+
+    constructor(context: vscode.ExtensionContext) {
+        const defaultConfigPath = path.join(context.extensionPath, 'src', 'config', 'complexity-config.json');
+        this.loadDefaultConfig(defaultConfigPath);
+    }
+
+    private loadDefaultConfig(defaultConfigPath: string): void {
+        const configData = fs.readFileSync(defaultConfigPath, 'utf8');
+        this.defaultConfig = JSON.parse(configData);
+    }
+
+    public validateUserConfig(configPath: string): boolean {
+        const userConfig: ComplexityConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        return this.compareConfigs(this.defaultConfig, userConfig);
+    }
+
+    private compareConfigs(defaultConfig: any, userConfig: any, path: string[] = []): boolean {
+        for (const key in defaultConfig) {
+            const currentPath = [...path, key].join('.');
+
+            if (!(key in userConfig)) {
+                vscode.window.showErrorMessage(`The key "${currentPath}" is missing from your configuration file.`);
+                return false;
+            }
+
+            if (typeof defaultConfig[key] === 'object' && !Array.isArray(defaultConfig[key])) {
+                if (!this.compareConfigs(defaultConfig[key], userConfig[key], [...path, key])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
