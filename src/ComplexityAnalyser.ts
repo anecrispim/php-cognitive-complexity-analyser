@@ -138,7 +138,7 @@ export class ComplexityAnalyser {
     private updateFileTabColor(editor: vscode.TextEditor, totalComplexity: number, maxComplexity: number): void {
         const documentUri = editor.document.uri.toString();
 
-        this.clearDecorations(editor);
+        this.clearDiagnostics(editor);
 
         const severity = totalComplexity > maxComplexity ? vscode.DiagnosticSeverity.Warning : vscode.DiagnosticSeverity.Information;
         const diagnostics: vscode.Diagnostic[] = [];
