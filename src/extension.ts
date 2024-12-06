@@ -47,10 +47,18 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
+        const fileName = editor.document.fileName;
+        if (!fileName.endsWith(".php")) {
+            vscode.window.showWarningMessage("A extensão só pode ser executada em arquivos PHP.");
+            return;
+        }
+
         const phpCode = editor.document.getText();
 
-        const complexityAnalyzer = new ComplexityAnalyser();
+        const complexityAnalyzer = new ComplexityAnalyser(configPath);
         const ast = complexityAnalyzer.getAST(phpCode);
+
+        complexityAnalyzer.calculateComplexity(phpCode);
 
         // Exibe a AST no console para debug
         console.log(JSON.stringify(ast, null, 2));
