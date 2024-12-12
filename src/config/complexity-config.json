@@ -44,12 +44,7 @@
           "weights": {
             "method": 1,
             "parameters": 0.5,
-            "return": 0.5,
-            "visibility": {
-              "public": 1,
-              "protected": 0.5,
-              "private": 0.5
-            }
+            "return": 0.5
           }
         },
         "expressionComplexity": {

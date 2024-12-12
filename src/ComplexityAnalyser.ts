@@ -2,7 +2,7 @@ import * as parser from 'php-parser';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-const decorationsMap: Map<string, vscode.TextEditorDecorationType> = new Map();
+const decorationsMap: Map<string, vscode.TextEditorDecorationType[]> = new Map();
 const diagnosticsMap: Map<string, vscode.Diagnostic[]> = new Map();
 const diagnosticCollection: vscode.DiagnosticCollection = vscode.languages.createDiagnosticCollection('complexity');
 export class ComplexityAnalyser {
@@ -12,13 +12,18 @@ export class ComplexityAnalyser {
         this.loadUserConfig(configUserPath);
     }
 
-    // Método para carregar o arquivo JSON do usuário
+    /** Método para carregar o arquivo JSON do usuário 
+     * @param configPath
+    **/
     private loadUserConfig(configPath: string): void {
         const configData = fs.readFileSync(configPath, 'utf8');
         this.userConfig = JSON.parse(configData);
     }
 
-    // Método que gera a AST do código PHP
+    /**
+     * Método que gera a AST do código PHP
+     * @param phpCode
+     */
     public getAST(phpCode: string) {
         const phpParser = new parser.Engine({
             parser: {
@@ -30,17 +35,15 @@ export class ComplexityAnalyser {
             }
         });
 
-        // Obter o nome do arquivo atualmente aberto
         const editor = vscode.window.activeTextEditor;
         let fileName = 'userInput.php';
 
         if (editor) {
             const filePath = editor.document.fileName;
-            fileName = path.basename(filePath); // Extrai apenas o nome do arquivo
+            fileName = path.basename(filePath);
         }
 
         try {
-            // Passa o código PHP e o nome do arquivo do usuário
             const ast = phpParser.parseCode(phpCode, fileName);
             return ast;
         } catch (error) {
@@ -51,7 +54,11 @@ export class ComplexityAnalyser {
         }
     }
 
-    // Método para percorrer a AST
+    /**
+     * Método para percorrer a AST
+     * @param node 
+     * @param callback 
+     */
     private walkAST(node: any, callback: (node: any) => void): void {
         callback(node);
 
@@ -63,41 +70,24 @@ export class ComplexityAnalyser {
             for (const child of node.body) {
                 this.walkAST(child, callback);
             }
+        } else if (node.body) {
+            this.walkAST(node.body, callback);
         }
-    }
+    } 
 
-    // Método para calcular a complexidade de cada nó
-    private calculateNodeComplexity(node: any): number {
-        let complexity = 0;
-
-        for (const indexKey in this.userConfig.totalFileComplexity.indices) {
-            const index = this.userConfig.totalFileComplexity.indices[indexKey];
-            const weights = index.weights;
-
-            if (weights[node.kind]) {
-                // Adiciona o peso correspondente ao tipo de nó
-                complexity += weights[node.kind];
-            }
-
-            // Se o nó for um método, considere a visibilidade
-            if (node.kind === 'method' && node.visibility && weights.visibility) {
-                complexity += weights.visibility[node.visibility] || 0;
-            }
-        }
-
-        return complexity;
-    }
-
-    // Metodo responsável por aicionar notações no código referentes a complexidade calculada
+    /**
+     * Metodo responsável por aicionar notações no código referentes a complexidade calculada
+     * @param editor 
+     * @param totalComplexity 
+     * @param maxComplexity 
+     */
     private addComplexityDecoration(editor: vscode.TextEditor, totalComplexity: number, maxComplexity: number): void {
         const documentUri = editor.document.uri.toString();
-
-        this.clearDecorations(editor);
 
         const decorationType = vscode.window.createTextEditorDecorationType({
             after: {
                 margin: '10px',
-                color: totalComplexity > maxComplexity ? 'orange' : 'blue',
+                color: totalComplexity > maxComplexity ? 'orange' : '#00c0ff',
                 contentText: totalComplexity > maxComplexity
                     ? `⚠️ Complexidade: ${totalComplexity}/${maxComplexity} (Excedida)`
                     : `✔️ Complexidade: ${totalComplexity}/${maxComplexity} (Aceitável)`
@@ -108,23 +98,48 @@ export class ComplexityAnalyser {
         const position = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0));
         editor.setDecorations(decorationType, [position]);
 
-        decorationsMap.set(documentUri, decorationType);
+        this.addOnMapDecorations(documentUri, decorationType);
     }
 
-    // Método responsável por limpar as decoraçoes adicionadas no arquivo do usuário em execuções anteriores
-    private clearDecorations(editor: vscode.TextEditor) {
+    /**
+     * Método responsável por armazenar as decorações criadas no arquivo em um map global, para que em próximas
+     * execuções possa ser salvo
+     * @param documentUri 
+     * @param decorationType 
+     */
+    private addOnMapDecorations(documentUri: string, decorationType: vscode.TextEditorDecorationType) {
+        let previousDecorationType = decorationsMap.get(documentUri) ? decorationsMap.get(documentUri) : [];
+
+        previousDecorationType?.push(decorationType);
+
+        if (previousDecorationType) {
+            decorationsMap.set(documentUri, previousDecorationType);
+        }
+    }
+
+    /**
+     * Método responsável por limpar as decoraçoes adicionadas no arquivo do usuário em execuções anteriores
+     * @param editor 
+     */
+    public clearDecorations(editor: vscode.TextEditor) {
         const documentUri = editor.document.uri.toString();
 
         if (decorationsMap.has(documentUri)) {
             const previousDecorationType = decorationsMap.get(documentUri);
             if (previousDecorationType) {
-                previousDecorationType.dispose();
+                for (var typeDecoration of previousDecorationType) {
+                    typeDecoration.dispose();
+                }
             }
+            decorationsMap.delete(documentUri);
         }
     }
 
-    // Método responsável por limpar os diagnosticos adicionados no arquivo do usuário em execuções anteriores
-    private clearDiagnostics(editor: vscode.TextEditor) {
+    /**
+     * Método responsável por limpar os diagnosticos adicionados no arquivo do usuário em execuções anteriores
+     * @param editor 
+     */
+    public clearDiagnostics(editor: vscode.TextEditor) {
         const documentUri = editor.document.uri.toString();
 
         if (diagnosticsMap.has(documentUri)) {
@@ -133,12 +148,15 @@ export class ComplexityAnalyser {
     }
 
 
-    // Método responsável por atualizar a cor do arquivo do usuário 
-    // caso tenha excedido ou esteja ok o limite de complexidade calculado para o arquivo que executou a extensão
+    /**
+     * Método responsável por atualizar a cor do arquivo do usuário 
+     * caso tenha excedido ou esteja ok o limite de complexidade calculado para o arquivo que executou a extensão
+     * @param editor 
+     * @param totalComplexity 
+     * @param maxComplexity 
+     */
     private updateFileTabColor(editor: vscode.TextEditor, totalComplexity: number, maxComplexity: number): void {
         const documentUri = editor.document.uri.toString();
-
-        this.clearDiagnostics(editor);
 
         const severity = totalComplexity > maxComplexity ? vscode.DiagnosticSeverity.Warning : vscode.DiagnosticSeverity.Information;
         const diagnostics: vscode.Diagnostic[] = [];
@@ -155,7 +173,11 @@ export class ComplexityAnalyser {
         diagnosticCollection.set(editor.document.uri, diagnostics);
     }
 
-    // Método principal para calcular a complexidade
+    /**
+     * Método principal para calcular a complexidade
+     * @param phpCode 
+     * @returns 
+     */
     public calculateComplexity(phpCode: string): void {
         const ast = this.getAST(phpCode);
 
@@ -163,28 +185,112 @@ export class ComplexityAnalyser {
             return;
         }
 
-        let totalComplexity = 0;
-
-        this.walkAST(ast, (node) => {
-            totalComplexity += this.calculateNodeComplexity(node);
-        });
-
-        const maxComplexity = this.userConfig?.totalFileComplexity?.maxComplexity;
-
         const editor = vscode.window.activeTextEditor;
 
         if (editor) {
-            this.updateFileTabColor(editor, totalComplexity, maxComplexity);
-            this.addComplexityDecoration(editor, totalComplexity, maxComplexity);
-
-        }
-        
-        if (totalComplexity > maxComplexity) {
-            vscode.window.showErrorMessage(
-                `Complexidade do arquivo excedida! Complexidade atual: ${totalComplexity}/${maxComplexity}`
-            );
+            this.calculateAndApplyComplexity(ast, editor);
         }
     }
 
+    /**
+     * Método para calcular e aplicar complexidade no código percorrendo a AST
+     * @param ast 
+     * @param editor 
+     */
+    private calculateAndApplyComplexity(ast: any, editor: vscode.TextEditor): void {
+        const diagnostics: vscode.Diagnostic[] = [];
+        const decorations: { range: vscode.Range; contentText: string; color: string }[] = [];
+        let totalComplexity = 0;
+    
+        this.clearDiagnostics(editor);
+        this.clearDecorations(editor);
+    
+        const indices = this.userConfig.totalFileComplexity.indices;
+        let insideFunction = false;
+        let insideMethod = false;
+
+        this.walkAST(ast, (node) => {
+            for (const indexKey in indices) {
+                const indexConfig = indices[indexKey];
+                const weights = indexConfig.weights;
+
+                if (node.kind === 'function') {
+                    insideFunction = true;
+                } else if (node.kind === 'method') {
+                    insideMethod = true;
+                }
+    
+                if (node.kind === 'return') {
+                    if (insideFunction && indexKey == 'methodComplexity') {
+                        continue;
+                    } else if (insideMethod && indexKey == 'functionComplexity') {
+                        continue;
+                    }
+                }
+    
+                if (weights[node.kind]) {
+                    const weight = weights[node.kind];
+                    totalComplexity += weight;
+    
+                    const elementLine = Math.max(0, node.loc.start.line - 1);
+                    const lineEndCharacter = editor.document.lineAt(elementLine).text.length;
+                    const range = new vscode.Range(
+                        new vscode.Position(elementLine, lineEndCharacter),
+                        new vscode.Position(elementLine, lineEndCharacter) 
+                    );
+    
+                    const complexityMessage = `${indexKey}: Complexidade ${weight}/${indexConfig.maxComplexity}`;
+                    const color = weight > indexConfig.maxComplexity ? 'orange' : '#00c0ff';
+    
+                    const diagnostic = new vscode.Diagnostic(
+                        range,
+                        complexityMessage,
+                        weight > indexConfig.maxComplexity
+                            ? vscode.DiagnosticSeverity.Warning
+                            : vscode.DiagnosticSeverity.Information
+                    );
+                    diagnostics.push(diagnostic);
+    
+                    decorations.push({ range, contentText: complexityMessage, color });
+                }
+            }
+        });
+    
+        diagnosticCollection.set(editor.document.uri, diagnostics);
+    
+        const elementDecorationType = vscode.window.createTextEditorDecorationType({
+            after: {
+                margin: '0 0 0 1em',
+                fontStyle: 'italic',
+            },
+            isWholeLine: false,
+        });
+    
+        editor.setDecorations(
+            elementDecorationType,
+            decorations.map((decoration) => ({
+                range: decoration.range,
+                renderOptions: {
+                    after: {
+                        contentText: decoration.contentText,
+                        color: decoration.color,
+                    },
+                },
+            }))
+        );
+        const documentUri = editor.document.uri.toString();
+        this.addOnMapDecorations(documentUri, elementDecorationType);
+    
+        const maxComplexity = this.userConfig.totalFileComplexity.maxComplexity;
+        this.addComplexityDecoration(editor, totalComplexity, maxComplexity);
+    
+        this.updateFileTabColor(editor, totalComplexity, maxComplexity);
+    
+        if (totalComplexity > maxComplexity) {
+            vscode.window.showErrorMessage(
+                `Complexidade total excedida: ${totalComplexity}/${maxComplexity}`
+            );
+        }
+    }
 
 }

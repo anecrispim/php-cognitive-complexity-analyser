@@ -22,16 +22,31 @@ export class ConfigValidator {
         this.loadDefaultConfig(defaultConfigPath);
     }
 
+    /**
+     * Método responsável pro carregar o arquivo de configuração padrão
+     * @param defaultConfigPath
+     */
     private loadDefaultConfig(defaultConfigPath: string): void {
         const configData = fs.readFileSync(defaultConfigPath, 'utf8');
         this.defaultConfig = JSON.parse(configData);
     }
 
+    /**
+     * Método responsável por validar o arquivo de configuração do usuário, incluindo nome e estruturas json
+     * que devem seguir conforme o arquivo padrão
+     * @param configPath
+     */
     public validateUserConfig(configPath: string): boolean {
         const userConfig: ComplexityConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
         return this.compareConfigs(this.defaultConfig, userConfig);
     }
 
+    /**
+     * Método responsável por comparar as configurações entre os arquivos padrão e do usuário
+     * @param defaultConfig 
+     * @param userConfig
+     * @param path
+     */
     private compareConfigs(defaultConfig: any, userConfig: any, path: string[] = []): boolean {
         for (const key in defaultConfig) {
             const currentPath = [...path, key].join('.');

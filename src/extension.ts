@@ -60,6 +60,15 @@ export function activate(context: vscode.ExtensionContext) {
 
         complexityAnalyzer.calculateComplexity(phpCode);
 
+        vscode.workspace.onDidChangeTextDocument((event) => {
+            const editor = vscode.window.activeTextEditor;
+        
+            if (editor && editor.document === event.document) {
+                complexityAnalyzer.clearDecorations(editor);
+                complexityAnalyzer.clearDiagnostics(editor);
+            }
+        });
+
         // Exibe a AST no console para debug
         console.log(JSON.stringify(ast, null, 2));
     });
