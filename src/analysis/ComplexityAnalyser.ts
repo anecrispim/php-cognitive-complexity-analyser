@@ -330,6 +330,15 @@ export class ComplexityAnalyser {
                         weight += paramComplexity;
                     }
 
+                    if (node.kind === 'if') {
+                        // Verifica se existe um else if embutido no "alternate"
+                        let alternateNode = node.alternate;
+                        while (alternateNode && alternateNode.kind === "if") {
+                            weight += indices['controlStructureComplexity']['weights']['elseif'] || 0;
+                            alternateNode = alternateNode.alternate; // Continua percorrendo caso existam mais elseif
+                        }
+                    }
+
                     totalComplexity += weight;
     
                     const elementLine = Math.max(0, node.loc.start.line - 1);

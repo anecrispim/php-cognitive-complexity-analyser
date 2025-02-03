@@ -7,6 +7,7 @@
           "description": "Complexidade máxima permitida para estruturas de controle (if, for, while, switch).",
           "weights": {
             "if": 1,
+            "elseif": 1,
             "for": 2,
             "while": 2,
             "switch": 3,
