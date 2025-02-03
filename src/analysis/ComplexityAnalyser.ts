@@ -2,9 +2,13 @@ import * as parser from 'php-parser';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import { MessageContext } from '../messages/MessageContext';
+
 const decorationsMap: Map<string, vscode.TextEditorDecorationType[]> = new Map();
 const diagnosticsMap: Map<string, vscode.Diagnostic[]> = new Map();
 const diagnosticCollection: vscode.DiagnosticCollection = vscode.languages.createDiagnosticCollection('complexity');
+const messageContext = new MessageContext();
+
 export class ComplexityAnalyser {
     private userConfig: any;
 
@@ -48,7 +52,7 @@ export class ComplexityAnalyser {
             return ast;
         } catch (error) {
             if (error instanceof Error) {
-                vscode.window.showErrorMessage(`Error generating AST: ${error.message}`);
+                vscode.window.showErrorMessage(messageContext.getMessage('errorGeneratingAST'));
             }
             return null;
         }
@@ -89,8 +93,8 @@ export class ComplexityAnalyser {
                 margin: '10px',
                 color: totalComplexity > maxComplexity ? 'orange' : '#00c0ff',
                 contentText: totalComplexity > maxComplexity
-                    ? `⚠️ Complexidade: ${totalComplexity}/${maxComplexity} (Excedida)`
-                    : `✔️ Complexidade: ${totalComplexity}/${maxComplexity} (Aceitável)`
+                    ? `⚠️ ${messageContext.getMessage('complexity')}: ${totalComplexity}/${maxComplexity} (${messageContext.getMessage('exceeded')})`
+                    : `✔️ ${messageContext.getMessage('complexity')}: ${totalComplexity}/${maxComplexity} (${messageContext.getMessage('accepted')})`
             },
             isWholeLine: true
         });
@@ -162,8 +166,8 @@ export class ComplexityAnalyser {
         const diagnostics: vscode.Diagnostic[] = [];
 
         const message = totalComplexity > maxComplexity
-            ? `Complexidade excedida: ${totalComplexity}/${maxComplexity}`
-            : `Complexidade aceitável: ${totalComplexity}/${maxComplexity}`;
+            ? `${messageContext.getMessage('complexityExceeded')}: ${totalComplexity}/${maxComplexity}`
+            : `${messageContext.getMessage('complexityAccepted')}: ${totalComplexity}/${maxComplexity}`;
 
         const range = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 1));
         diagnostics.push(new vscode.Diagnostic(range, message, severity));
@@ -269,7 +273,7 @@ export class ComplexityAnalyser {
                             new vscode.Position(elementLine, lineEndCharacter) 
                         );
                 
-                        const complexityMessage = `${indexKey}: Complexidade ${localWeight}`;
+                        const complexityMessage = `${indexKey}: ${messageContext.getMessage('complexity')} ${localWeight}`;
                         const color =  '#00c0ff';
                 
                         const diagnostic = new vscode.Diagnostic(
@@ -335,7 +339,7 @@ export class ComplexityAnalyser {
                         new vscode.Position(elementLine, lineEndCharacter) 
                     );
     
-                    const complexityMessage = `${indexKey}: Complexidade ${weight}`;
+                    const complexityMessage = `${indexKey}: ${messageContext.getMessage('complexity')} ${weight}`;
                     const color = '#00c0ff';
     
                     const diagnostic = new vscode.Diagnostic(
@@ -382,7 +386,7 @@ export class ComplexityAnalyser {
     
         if (totalComplexity > maxComplexity) {
             vscode.window.showWarningMessage(
-                `Complexidade total excedida: ${totalComplexity}/${maxComplexity}`
+                `${messageContext.getMessage('totalComplexityExceeded')}: ${totalComplexity}/${maxComplexity}`
             );
         }
     }

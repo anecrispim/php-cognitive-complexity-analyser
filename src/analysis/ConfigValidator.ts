@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import { MessageContext } from '../messages/MessageContext';
 
 interface ComplexityConfig {
     totalFileComplexity: {
@@ -48,11 +49,13 @@ export class ConfigValidator {
      * @param path
      */
     private compareConfigs(defaultConfig: any, userConfig: any, path: string[] = []): boolean {
+        const messageContext = new MessageContext();
+
         for (const key in defaultConfig) {
             const currentPath = [...path, key].join('.');
 
             if (!(key in userConfig)) {
-                vscode.window.showErrorMessage(`The key "${currentPath}" is missing from your configuration file.`);
+                vscode.window.showErrorMessage(messageContext.getMessage('invalidKey').replace('{0}', currentPath));
                 return false;
             }
 

@@ -1,19 +1,20 @@
 import * as vscode from 'vscode';
-import { ComplexityAnalyser } from './ComplexityAnalyser';
-import { ConfigValidator } from './ConfigValidator';
+import { ComplexityAnalyser } from './analysis/ComplexityAnalyser';
+import { ConfigValidator } from './analysis/ConfigValidator';
+import { MessageContext } from './messages/MessageContext';
 import * as fs from 'fs';
 import * as path from 'path';
 
 export function activate(context: vscode.ExtensionContext) {
-    console.log('PHP Cognitive Complexity Analyzer extension is active.');
-
+    const messageContext = new MessageContext();
+    
 	// Registrar o comando de análise de complexidade
     let disposable = vscode.commands.registerCommand('extension.analyzeComplexity', () => {
         // Validação do arquivo de configuração json com as complexidades a serem analisadas
         const rootPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath || vscode.workspace.rootPath;
 
         if (!rootPath) {
-            vscode.window.showWarningMessage('Please open a project folder to use this extension.');
+            vscode.window.showWarningMessage(messageContext.getMessage("emptyProjectFolder"));
             return;
         }
 
@@ -24,7 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (!fs.existsSync(configFilePath)) {
             // Copia o arquivo de configuração para o diretório raiz do projeto do usuário
             fs.copyFileSync(defaultConfigPath, configFilePath);
-            vscode.window.showInformationMessage('complexity-config.json file added to project root.');
+            vscode.window.showInformationMessage(messageContext.getMessage("configFileAdded"));
         }
 
         // Validação da estrutura do arquivo
@@ -33,32 +34,31 @@ export function activate(context: vscode.ExtensionContext) {
 
         if (fs.existsSync(configPath)) {
             if (configValidator.validateUserConfig(configPath)) {
-                vscode.window.showInformationMessage("Configuration validated successfully!");
+                vscode.window.showInformationMessage(messageContext.getMessage("validConfig"));
             } else {
-                vscode.window.showErrorMessage("The configuration file is invalid.");
+                vscode.window.showErrorMessage(messageContext.getMessage("invalidConfig"));
                 return;
             }
         } else {
-            vscode.window.showErrorMessage("The configuration file complexity-config.json was not found.");
+            vscode.window.showErrorMessage(messageContext.getMessage("notFoundConfig"));
             return;
         }
 
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
-            vscode.window.showErrorMessage('No active text editor!');
+            vscode.window.showErrorMessage(messageContext.getMessage("inativeTextEditor"));
             return;
         }
 
         const fileName = editor.document.fileName;
         if (!fileName.endsWith(".php")) {
-            vscode.window.showWarningMessage("A extensão só pode ser executada em arquivos PHP.");
+            vscode.window.showWarningMessage(messageContext.getMessage("invalidFile"));
             return;
         }
 
         const phpCode = editor.document.getText();
 
         const complexityAnalyzer = new ComplexityAnalyser(configPath);
-        const ast = complexityAnalyzer.getAST(phpCode);
 
         complexityAnalyzer.calculateComplexity(phpCode);
 
@@ -70,9 +70,6 @@ export function activate(context: vscode.ExtensionContext) {
                 complexityAnalyzer.clearDiagnostics(editor);
             }
         });
-
-        // Exibe a AST no console para debug
-        console.log(JSON.stringify(ast, null, 2));
     });
 
     // Adicionar o comando ao contexto

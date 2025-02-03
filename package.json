@@ -32,7 +32,22 @@
         ],
         "configuration": "./language-configuration.json"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "PHP Complexity Analyzer",
+      "properties": {
+          "phpComplexityAnalyzer.language": {
+              "type": "string",
+              "default": "en",
+              "enum": ["pt", "en"],
+              "enumDescriptions": [
+                  "Português",
+                  "English"
+              ],
+              "description": "Language of extension messages."
+          }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
