@@ -216,8 +216,10 @@ export class ComplexityAnalyser {
 
                 if (node.kind === 'function') {
                     insideFunction = true;
+                    insideMethod = false;
                 } else if (node.kind === 'method') {
                     insideMethod = true;
+                    insideFunction = false;
                 }
     
                 if (node.kind === 'return') {
@@ -227,9 +229,103 @@ export class ComplexityAnalyser {
                         continue;
                     }
                 }
+
+                if (node.kind === 'expressionstatement' && indexKey === 'expressionComplexity') {
+                    let localWeight = 0;
+
+                    // Função recursiva para percorrer a árvore de operadores binários
+                    function traverseExpression(exprNode: any) {
+                        if (!exprNode) return;
+
+                        if (['&&', '||', 'or', 'and', 'xor', '!'].includes(exprNode.type)) {
+                            localWeight += indices['expressionComplexity']['weights']['logicalOperators'] || 0;
+                        }
+                        if (['+', '-', '*', '/', '%', '**'].includes(exprNode.type)) {
+                            localWeight += indices['expressionComplexity']['weights']['arithmeticOperators'] || 0;
+                        }
+
+                        if (exprNode.kind === "retif") {
+                            localWeight += indices['expressionComplexity']['weights']['ternary'] || 0;
+                        }
+
+                        if (exprNode.left) traverseExpression(exprNode.left);
+                        if (exprNode.right) traverseExpression(exprNode.right);
+                        if (exprNode.test) traverseExpression(exprNode.test);
+                        if (exprNode.trueExpr) traverseExpression(exprNode.trueExpr);
+                        if (exprNode.falseExpr) traverseExpression(exprNode.falseExpr);        
+                    }
+
+                    if (node.expression.right) {
+                        traverseExpression(node.expression.right);
+                    }
+
+                    totalComplexity += localWeight;
+                
+                    if (localWeight > 0) {
+                        const elementLine = Math.max(0, node.loc.start.line - 1);
+                        const lineEndCharacter = editor.document.lineAt(elementLine).text.length;
+                        const range = new vscode.Range(
+                            new vscode.Position(elementLine, lineEndCharacter),
+                            new vscode.Position(elementLine, lineEndCharacter) 
+                        );
+                
+                        const complexityMessage = `${indexKey}: Complexidade ${localWeight}`;
+                        const color =  '#00c0ff';
+                
+                        const diagnostic = new vscode.Diagnostic(
+                            range,
+                            complexityMessage,
+                            vscode.DiagnosticSeverity.Information
+                        );
+                        diagnostics.push(diagnostic);
+                
+                        decorations.push({ range, contentText: complexityMessage, color });
+                    }
+                }
+                
     
                 if (weights[node.kind]) {
-                    const weight = weights[node.kind];
+                    let weight = weights[node.kind];
+
+                    if (node.kind === 'try') {
+                        let tryBlock = node.body;
+                        let catchBlocks = node.catches;
+                    
+                        if (Array.isArray(tryBlock)) {
+                            tryBlock.forEach(statement => {
+                                if (statement.kind === 'return') {
+                                    if (insideFunction) {
+                                        weight += indices['functionComplexity']['weights']['return'];
+                                    } else {
+                                        weight += indices['methodComplexity']['weights']['return'];
+                                    }
+                                }
+                            });
+                        }
+                    
+                        if (Array.isArray(catchBlocks)) {
+                            catchBlocks.forEach(catchBlock => {
+                                if (catchBlock.body && Array.isArray(catchBlock.body.children)) {
+                                    catchBlock.body.children.forEach((statement: { kind: any; }) => {
+                                        if (statement.kind === 'return') {
+                                            if (insideFunction) {
+                                                weight += indices['functionComplexity']['weights']['return'];
+                                            } else {
+                                                 weight += indices['methodComplexity']['weights']['return'];
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+
+                    if ((node.kind === "function" || node.kind === "method") && node.arguments) {
+                        const paramWeight = weights["parameters"] || 0;
+                        const paramComplexity = node.arguments.length * paramWeight;
+                        weight += paramComplexity;
+                    }
+
                     totalComplexity += weight;
     
                     const elementLine = Math.max(0, node.loc.start.line - 1);
@@ -239,15 +335,13 @@ export class ComplexityAnalyser {
                         new vscode.Position(elementLine, lineEndCharacter) 
                     );
     
-                    const complexityMessage = `${indexKey}: Complexidade ${weight}/${indexConfig.maxComplexity}`;
-                    const color = weight > indexConfig.maxComplexity ? 'orange' : '#00c0ff';
+                    const complexityMessage = `${indexKey}: Complexidade ${weight}`;
+                    const color = '#00c0ff';
     
                     const diagnostic = new vscode.Diagnostic(
                         range,
                         complexityMessage,
-                        weight > indexConfig.maxComplexity
-                            ? vscode.DiagnosticSeverity.Warning
-                            : vscode.DiagnosticSeverity.Information
+                        vscode.DiagnosticSeverity.Information
                     );
                     diagnostics.push(diagnostic);
     
@@ -287,7 +381,7 @@ export class ComplexityAnalyser {
         this.updateFileTabColor(editor, totalComplexity, maxComplexity);
     
         if (totalComplexity > maxComplexity) {
-            vscode.window.showErrorMessage(
+            vscode.window.showWarningMessage(
                 `Complexidade total excedida: ${totalComplexity}/${maxComplexity}`
             );
         }

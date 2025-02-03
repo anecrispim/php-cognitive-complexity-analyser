@@ -36,9 +36,11 @@ export function activate(context: vscode.ExtensionContext) {
                 vscode.window.showInformationMessage("Configuration validated successfully!");
             } else {
                 vscode.window.showErrorMessage("The configuration file is invalid.");
+                return;
             }
         } else {
             vscode.window.showErrorMessage("The configuration file complexity-config.json was not found.");
+            return;
         }
 
         const editor = vscode.window.activeTextEditor;
