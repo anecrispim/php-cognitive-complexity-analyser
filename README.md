@@ -140,7 +140,7 @@ npm run test
 - 🎯 **Análise de complexidade cognitiva** baseada no **CDD (Cognitive Driven Development)**.
 - 🎨 **Notações visuais ao lado do código** para indicar complexidade.
 - 🛠️ **Diagnósticos integrados ao VS Code (`Ctrl + Shift + M`)**.
-- 🌍 **Suporte a Português e Inglês..
+- 🌍 **Suporte a Português e Inglês**.
 - 📑 **Configuração personalizada via JSON** para definir pesos de complexidade (pesos são personalizáveis).
 
 ---
@@ -154,7 +154,7 @@ npm run test
 
 ## **📌 Feedback e Suporte**
 📌 **Encontrou um bug ou tem sugestões?**  
-🔗 **[Abra uma issue no GitHub]([https://github.com/seu-repositorio/issues](https://github.com/anecrispim/php-cognitive-complexity-analyser/issues))**  
+🔗 **[Abra uma issue no GitHub](https://github.com/anecrispim/php-cognitive-complexity-analyser/issues)**  
 📩 **Entre em contato** pelo e-mail: `anecrispim2@gmail.com`
 
 ---
