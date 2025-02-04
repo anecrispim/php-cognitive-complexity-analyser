@@ -138,9 +138,8 @@ npm run test
 
 ## **📌 Próximas Atualizações**
 📌 **O que vem por aí?**  
-🔄 **Melhorias na análise de complexidade para estruturas aninhadas**.  
+🔄 **Melhorias na análise de complexidade para outras estruturas**.  
 📈 **Suporte aprimorado para operadores e expressões complexas**.  
-🔗 **Integração com outras ferramentas de análise de código**.  
 
 🚀 **Sugestões? Relate no GitHub!** [**github.com/seu-repositorio**](https://github.com/)  
 
