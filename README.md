@@ -42,9 +42,9 @@ Esta extensão adiciona as seguintes configurações:
 | `phpComplexityAnalyzer.language` | `string` | `"en"` | Define o idioma das mensagens da extensão (`"pt"` para Português e `"en"` para Inglês). |
 
 ### **📌 Como Alterar as Configurações**
-1️⃣ **Abrir o VS Code**  
-2️⃣ Ir para **"Configurações"** (`Ctrl + ,` no Windows/Linux ou `Cmd + ,` no macOS). Ou "File" -> "Preferences" -> "Settings".
-3️⃣ Procurar por **"PHP Complexity Analyzer"** e modificar os valores.  
+1️⃣ **Abrir o VS Code**\
+2️⃣ Ir para **"Configurações"** (`Ctrl + ,` no Windows/Linux ou `Cmd + ,` no macOS). Ou "File" -> "Preferences" -> "Settings".\
+3️⃣ Procurar por **"PHP Complexity Analyzer"** e modificar os valores.\
 4️⃣ **Alternativamente**, edite o arquivo `settings.json`:
 
 ```json
@@ -83,6 +83,20 @@ php-cognitive-complexity-analyser/
 │── README.md                       # Documentação do GitHub
 │── .gitignore                      # Arquivos ignorados pelo Git
 ```
+
+---
+
+## **🛠️ Ferramentas Utilizadas**
+Esta extensão utiliza as seguintes bibliotecas e ferramentas:
+
+| 📌 Ferramenta | 🔗 Link | 💡 Função |
+|--------------|--------|-----------|
+| **[php-parser](https://github.com/glayzzle/php-parser)** | [GitHub](https://github.com/glayzzle/php-parser) | Geração da AST (Árvore sintática abstrata) do código PHP |
+| **VS Code API** | [VSCode Docs](https://code.visualstudio.com/api) | API para criar diagnósticos e decorações no VS Code |
+| **TypeScript** | [TypeScript Lang](https://www.typescriptlang.org/) | Desenvolvimento da extensão |
+| **Node.js** | [Node.js](https://nodejs.org/) | Execução da extensão e dependências |
+
+📌 **Outras ferramentas podem ser adicionadas conforme a extensão evolui**.
 
 ---
 
