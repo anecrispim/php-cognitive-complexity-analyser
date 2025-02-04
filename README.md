@@ -141,28 +141,23 @@ npm run test
 🚀 **Primeira versão da extensão com funcionalidades principais**:
 - 🎯 **Análise de complexidade cognitiva** baseada no **CDD (Cognitive Driven Development)**.
 - 🎨 **Notações visuais ao lado do código** para indicar complexidade.
-- 🟠 **Coloração da aba do arquivo no VS Code**:
-  - 🔵 **Azul:** Complexidade dentro do limite.
-  - 🟠 **Laranja:** Complexidade excedida.
-- 📑 **Configuração via JSON** para definir pesos de complexidade (pesos são personalizáveis).
-- 🌍 **Suporte a dois idiomas no retorno de mensagens da extensão** (**Português e Inglês**).
 - 🛠️ **Diagnósticos integrados ao VS Code (`Ctrl + Shift + M`)**.
+- 🌍 **Suporte a Português e Inglês..
+- 📑 **Configuração personalizada via JSON** para definir pesos de complexidade (pesos são personalizáveis).
 
 ---
 
 ## **📌 Próximas Atualizações**
 📌 **O que vem por aí?**  
-🔄 **Melhorias na análise de complexidade para outras estruturas**.  
+🔄 **Melhorias na análise de complexidade para outras estruturas do código**.  
 📈 **Suporte aprimorado para operadores e expressões complexas**.  
-
-🚀 **Sugestões? Relate no GitHub!** [**github.com/seu-repositorio**](https://github.com/)  
 
 ---
 
 ## **📌 Feedback e Suporte**
 📌 **Encontrou um bug ou tem sugestões?**  
-🔗 **[Abra uma issue no GitHub](https://github.com/seu-repositorio/issues)**  
-📩 **Entre em contato** pelo e-mail: `contato@seuprojeto.com`
+🔗 **[Abra uma issue no GitHub]([https://github.com/seu-repositorio/issues](https://github.com/anecrispim/php-cognitive-complexity-analyser/issues))**  
+📩 **Entre em contato** pelo e-mail: `anecrispim2@gmail.com`
 
 ---
 
