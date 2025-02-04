@@ -137,8 +137,6 @@ npm run test
 ---
 
 ## **📌 Versão 1.0.0 - Lançamento Inicial**
-📅 **Data de Lançamento:** *DD/MM/AAAA*  
-🚀 **Primeira versão da extensão com funcionalidades principais**:
 - 🎯 **Análise de complexidade cognitiva** baseada no **CDD (Cognitive Driven Development)**.
 - 🎨 **Notações visuais ao lado do código** para indicar complexidade.
 - 🛠️ **Diagnósticos integrados ao VS Code (`Ctrl + Shift + M`)**.
