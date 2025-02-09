@@ -4,32 +4,32 @@
       "maxComplexity": 50,
       "indices": {
         "controlStructureComplexity": {
-          "description": "Complexidade máxima permitida para estruturas de controle (if, for, while, switch).",
+          "description": "Complexidade para estruturas de controle.",
           "weights": {
             "if": 1,
             "elseif": 1,
-            "for": 2,
-            "while": 2,
-            "switch": 3,
-            "foreach": 2
+            "for": 1,
+            "while": 1,
+            "switch": 1,
+            "foreach": 1
           }
         },
         "tryCatchComplexity": {
-          "description": "Complexidade máxima permitida para blocos try-catch.",
+          "description": "Complexidade para blocos try-catch.",
           "weights": {
-            "try": 3,
-            "catch": 2
+            "try": 1,
+            "catch": 1
           }
         },
         "inheritanceComplexity": {
-          "description": "Complexidade máxima permitida para herança de classes.",
+          "description": "Complexidade para herança de classes.",
           "weights": {
-            "class": 2,
-            "interface": 2
+            "class": 1,
+            "interface": 1
           }
         },
         "functionComplexity": {
-          "description": "Complexidade máxima permitida para funções.",
+          "description": "Complexidade para funções.",
           "weights": {
             "function": 1,
             "parameters": 0.5,
@@ -37,7 +37,7 @@
           }
         },
         "methodComplexity": {
-          "description": "Complexidade máxima permitida para métodos dentro de uma classe.",
+          "description": "Complexidade para métodos de classes.",
           "weights": {
             "method": 1,
             "parameters": 0.5,
@@ -45,11 +45,11 @@
           }
         },
         "expressionComplexity": {
-          "description": "Complexidade associada a expressões complexas, como ternários e operadores lógicos em variáveis.",
+          "description": "Complexidade associada a expressões complexas em variáveis.",
           "weights": {
             "ternary": 1,
             "logicalOperators": 0.5,
-            "arithmeticOperators": 0.3
+            "arithmeticOperators": 0.5
           }
         }
       }
