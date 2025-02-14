@@ -45,7 +45,7 @@
           }
         },
         "expressionComplexity": {
-          "description": "Complexidade associada a expressões complexas em variáveis.",
+          "description": "Complexidade associada a expressões em variáveis.",
           "weights": {
             "ternary": 1,
             "logicalOperators": 0.5,

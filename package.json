@@ -10,9 +10,6 @@
     "Other",
     "Programming Languages"
   ],
-  "activationEvents": [
-    "onLanguage:php"
-  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
