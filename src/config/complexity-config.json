@@ -1,58 +1,58 @@
 {
-    "totalFileComplexity": {
-      "description": "Complexidade cognitiva total máxima permitida para um arquivo PHP.",
-      "maxComplexity": 50,
-      "indices": {
-        "controlStructureComplexity": {
-          "description": "Complexidade para estruturas de controle.",
-          "weights": {
-            "if": 1,
-            "elseif": 1,
-            "for": 1,
-            "while": 1,
-            "switch": 1,
-            "foreach": 1
-          }
-        },
-        "tryCatchComplexity": {
-          "description": "Complexidade para blocos try-catch.",
-          "weights": {
-            "try": 1,
-            "catch": 1
-          }
-        },
-        "inheritanceComplexity": {
-          "description": "Complexidade para herança de classes.",
-          "weights": {
-            "class": 1,
-            "interface": 1
-          }
-        },
-        "functionComplexity": {
-          "description": "Complexidade para funções.",
-          "weights": {
-            "function": 1,
-            "parameters": 0.5,
-            "return": 0.5
-          }
-        },
-        "methodComplexity": {
-          "description": "Complexidade para métodos de classes.",
-          "weights": {
-            "method": 1,
-            "parameters": 0.5,
-            "return": 0.5
-          }
-        },
-        "expressionComplexity": {
-          "description": "Complexidade associada a expressões em variáveis.",
-          "weights": {
-            "ternary": 1,
-            "logicalOperators": 0.5,
-            "arithmeticOperators": 0.5
-          }
+  "totalFileComplexity": {
+    "description": "Complexidade cognitiva total máxima permitida para um arquivo PHP.",
+    "maxComplexity": 50,
+    "indices": {
+      "controlStructureComplexity": {
+        "description": "Complexidade para estruturas de controle.",
+        "weights": {
+          "if": 1,
+          "elseif": 1,
+          "for": 1,
+          "while": 1,
+          "switch": 1,
+          "foreach": 1
+        }
+      },
+      "tryCatchComplexity": {
+        "description": "Complexidade para blocos try-catch.",
+        "weights": {
+          "try": 1,
+          "catch": 1
+        }
+      },
+      "inheritanceComplexity": {
+        "description": "Complexidade para herança de classes.",
+        "weights": {
+          "class": 1,
+          "interface": 1
+        }
+      },
+      "functionComplexity": {
+        "description": "Complexidade para funções.",
+        "weights": {
+          "function": 1,
+          "parameters": 0.5,
+          "return": 0.5
+        }
+      },
+      "methodComplexity": {
+        "description": "Complexidade para métodos de classes.",
+        "weights": {
+          "method": 1,
+          "parameters": 0.5,
+          "return": 0.5
+        }
+      },
+      "expressionComplexity": {
+        "description": "Complexidade associada a expressões em variáveis.",
+        "weights": {
+          "ternary": 1,
+          "logicalOperators": 0.5,
+          "arithmeticOperators": 0.5
         }
       }
     }
   }
+}
   
