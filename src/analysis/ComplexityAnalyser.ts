@@ -335,6 +335,17 @@ export class ComplexityAnalyser {
                         let alternateNode = node.alternate;
                         while (alternateNode && alternateNode.kind === "if") {
                             weight += indices['controlStructureComplexity']['weights']['elseif'] || 0;
+                            if (alternateNode.body && Array.isArray(alternateNode.body.children)) {
+                                alternateNode.body.children.forEach((statement: { kind: string }) => {
+                                    if (statement.kind === 'return') {
+                                        if (insideFunction) {
+                                            weight += indices['functionComplexity']['weights']['return'];
+                                        } else {
+                                            weight += indices['methodComplexity']['weights']['return'];
+                                        }
+                                    }
+                                });
+                            }
                             alternateNode = alternateNode.alternate; // Continua percorrendo caso existam mais elseif
                         }
                     }
