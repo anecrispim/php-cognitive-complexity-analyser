@@ -3,7 +3,7 @@
   "displayName": "PHP Cognitive Complexity Analyser",
   "description": "",
   "publisher": "AneCristineCrispim",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "engines": {
     "vscode": "^1.93.0"
   },
@@ -15,7 +15,6 @@
   "contributes": {
     "commands": [
       {
-        "markdown": "DOCUMENTATION.md",
         "command": "extension.analyzeComplexity",
         "title": "Analyze PHP Code Complexity"
       }

@@ -1,41 +1,64 @@
-# **PHP Cognitive Complexity Analyzer**
+# PHP Cognitive Complexity Analyzer - Guia Rápido
+🚀 **Uma extensão para análise de complexidade cognitiva em código PHP, baseada no CDD (Cognitive Driven Development).**  
 
-📌 **Análise de complexidade cognitiva para PHP baseada no Cognitive Driven Development (CDD).**  
-🚀 **Ajuda a visualizar e reduzir a complexidade do código diretamente no VS Code!**
+## 📖 O que esta extensão faz?
+A extensão **PHP Cognitive Complexity Analyzer** permite que os desenvolvedores de PHP analisem a **complexidade cognitiva** de seus arquivos, identificando **estruturas de código que aumentam a carga mental**.
 
----
+Com essa análise, é possível melhorar a legibilidade e a manutenção do código, reduzindo **excesso de aninhamentos, operadores complexos e retornos dentro de estruturas condicionais**.
 
-## **📌 Recursos**
-✅ **Análise de complexidade cognitiva para PHP** com base no **CDD**.  
-✅ **Notações visuais no código**, indicando a complexidade de cada estrutura.  
-✅ **Coloração dinâmica da aba do arquivo** no VS Code:  
-   - 🔵 **Azul:** Complexidade dentro do limite.  
-   - 🟠 **Laranja:** Complexidade excedida.  
-✅ **Mensagens multilíngues** (**Português e Inglês**).  
-✅ **Configuração personalizável via JSON**, permitindo ajuste dos pesos de complexidade.  
+### 🔹 Principais Recursos:
+- 🔍 **Análise de Complexidade Cognitiva** baseada em AST (Abstract Syntax Tree).
+- 🎨 **Notações visuais** no código-fonte indicando a complexidade de cada estrutura.
+- ⚠️ **Alertas e diagnósticos** no VS Code quando a complexidade excede os limites definidos.
 
 ### **🔍 Exemplo de Notação Visual**
 ![complexity-annotation](images/complexity-annotation.png)
 
 ---
 
-## **📥 Instalação**
-### 📌 **Pelo VSCode Marketplace **
-1. Acesse [VSCode Marketplace](https://marketplace.visualstudio.com/).
-2. Busque por **PHP Cognitive Complexity Analyzer**.
-3. Clique em **Instalar**.
+## ⚙️ 1. Configuração
+Após instalar, a extensão precisa de um arquivo JSON de configuração para definir **os pesos e limites de complexidade**.
 
-### 📌 **Instalação Manual via VSIX**
-1. Baixe o arquivo `.vsix` do repositório.
-2. No VSCode, vá em **Extensões (`Ctrl + Shift + X`)**.
-3. Clique no **menu de três pontos** `⋮` e escolha **"Instalar do VSIX..."**.
-4. Selecione o arquivo `.vsix`.
+### 📌 Criando o arquivo de configuração
+1. **Execute a extensão** no seu projeto (explicação no próximo passo).
+2. A extensão **automaticamente criará o arquivo** `complexity-config.json` na raiz do projeto.
+3. **Edite o arquivo conforme sua necessidade.**  
 
----
-
-## **⚙️ Configuração**
-### **Configuração no VS Code**
-Esta extensão adiciona as seguintes configurações:
+### 📌 Exemplo de `complexity-config.json`
+```json
+{
+    "totalFileComplexity": {
+        "maxComplexity": 50,
+        "indices": {
+            "controlStructureComplexity": {
+                "maxComplexity": 3,
+                "weights": { "if": 1, "for": 2, "while": 2, "switch": 3, "foreach": 2, "elseif": 2 }
+            },
+            "tryCatchComplexity": {
+                "maxComplexity": 5,
+                "weights": { "try": 3, "catch": 2 }
+            },
+            "inheritanceComplexity": {
+                "maxComplexity": 3,
+                "weights": { "class": 2, "interface": 2 }
+            },
+            "functionComplexity": {
+                "maxComplexity": 5,
+                "weights": { "function": 1, "parameters": 0.5, "return": 0.5 }
+            },
+            "methodComplexity": {
+                "maxComplexity": 5,
+                "weights": { "method": 1, "parameters": 0.5, "return": 0.5 }
+            },
+            "expressionComplexity": {
+                "maxComplexity": 2,
+                "weights": { "ternary": 1, "logicalOperators": 0.5, "arithmeticOperators": 0.3 }
+            }
+        }
+    }
+}
+```
+Esta extensão também adiciona as seguintes configurações:
 
 | Configuração | Tipo | Padrão | Descrição |
 |-------------|------|--------|-----------|
@@ -55,108 +78,40 @@ Esta extensão adiciona as seguintes configurações:
 
 ---
 
-## **📜 Como Usar**
-1. **Abra um arquivo PHP** no VS Code.  
-2. **Execute o comando** `Analyze PHP Complexity` (`Ctrl + Shift + P`).  
-3. **Veja a complexidade calculada**:
-   - Notações ao lado do código.
-   - Diagnósticos no **"Problemas" (`Ctrl + Shift + M`)**.
-   - Coloração da aba do arquivo.
+## 🏗 2. Como Usar?
+A extensão pode ser executada manualmente em qualquer arquivo PHP dentro do VS Code.
+
+1. **Abra um arquivo PHP no editor.**
+2. Pressione `Ctrl+Shift+P` (Windows/Linux) ou `Cmd+Shift+P` (macOS) para abrir o **Painel de Comandos**.
+3. Digite **"Analyze PHP Complexity"** e pressione `Enter`.
 
 ---
 
-## **📂 Estrutura do Projeto**
-📌 **Organização do código para desenvolvedores**:
+## 🎨 3. Como a Extensão Indica a Complexidade?
+A extensão exibe **informações visuais** diretamente no editor para facilitar a análise.
 
-php-cognitive-complexity-analyser/
-```sh
-│── .vscode/                        # Configurações para depuração
-│── src/                            # Código-fonte da extensão
-│   ├── config/                         # Configuração do usuário para a extensão (complexity-config.json arquivo padrão)
-│   ├── messages/                       # Menssagens multilíngues (Strategy Pattern)
-│   ├── analysis/                       # Análise de complexidade e validação da configuração
-│   ├── extension.ts                    # Arquivo principal da extensão
-│   ├── test/                            # Testes unitários
-│── images/                         # Capturas de tela para README
-│── package.json                    # Configuração da extensão
-│── tsconfig.json                   # Configuração do TypeScript
-│── README.md                       # Documentação do GitHub
-│── .gitignore                      # Arquivos ignorados pelo Git
-```
+#### 📌 Notações no Código
+- 🔵 **Complexidade dentro do limite** → Exibida em **azul claro**.
+- 🟠 **Complexidade excedida** → Exibida em **laranja** com um alerta ⚠️.
+
+#### 📌 Alteração da Cor do Arquivo
+- 🟠 **Se a complexidade total exceder o limite**, o nome do arquivo na aba ficará **laranja**.
+- 🔵 **Se a complexidade estiver dentro do limite**, o nome do arquivo ficará **azul**.
+
+#### 📌 Hover com Complexidade
+- Ao passar o mouse sobre um trecho de código analisado, um **tooltip** mostra a complexidade calculada.
 
 ---
 
-## **🛠️ Ferramentas Utilizadas**
-Esta extensão utiliza as seguintes bibliotecas e ferramentas:
+# 📌 Para Mais Informações
 
-| 📌 Ferramenta | 🔗 Link | 💡 Função |
-|--------------|--------|-----------|
-| **php-parser** | [GitHub](https://github.com/glayzzle/php-parser) | Geração da AST (Árvore sintática abstrata) do código PHP |
-| **VS Code API** | [VSCode Docs](https://code.visualstudio.com/api) | API para criar diagnósticos e decorações no VS Code |
-| **TypeScript** | [TypeScript Lang](https://www.typescriptlang.org/) | Desenvolvimento da extensão |
-| **Node.js** | [Node.js](https://nodejs.org/) | Execução da extensão e dependências |
+## 🎯 4. Para mais informações
+Se precisar de mais detalhes sobre a extensão, consulte os seguintes recursos:
 
-📌 **Outras ferramentas podem ser adicionadas conforme a extensão evolui**.
+### 📢 **Repositório no GitHub**  
+O código-fonte da extensão e futuras atualizações podem ser encontrados no repositório oficial no GitHub:  
+🔗 [https://github.com/anecrispim/php-cognitive-complexity-analyser.git](https://github.com/anecrispim/php-cognitive-complexity-analyser.git)
 
 ---
 
-## **🛠️ Desenvolvimento**
-### **📌 Como Rodar Localmente**
-1️⃣ **Clone o repositório**:
-```sh
-git clone https://github.com/seu-repositorio/php-cognitive-complexity-analyzer.git
-cd php-cognitive-complexity-analyzer
-```
-2️⃣ **Instale as dependências**:
-```sh
-npm install
-```
-3️⃣ **Inicie a extensão no modo de desenvolvimento**:
-```sh
-npm run watch
-```
-### **📌 Como Rodar os Testes Unitários**
-```sh
-npm run test
-```
-
----
-
-## **⚠️ Situações específicas**
-1. A AST não identifica elseif diretamente, então a extensão percorre o nó if para calcular corretamente a complexidade do elseif, somando os pesos de if e elseif.
-2. A AST não identifica o catch diretamente, então a extensão percorre o nó try para calcular corretamente a complexidade dos elementos dentro do try, como um return, somando os pesos junto com o peso do try.
-3. A complexidade de operadores lógicos e aritméticos é calculada apenas em variáveis (pode ser expandido no futuro) e são tem os pesos somados para resumiur a notação apresentada ao lado da variável.
-4. Configuração personalizada via JSON é obrigatória para o funcionamento adequado da análise.
-
----
-
-# **📌 Release Notes - PHP Cognitive Complexity Analyzer**
-
-🚀 **Histórico de versões e melhorias da extensão**.  
-
----
-
-## **📌 Versão 1.0.0 - Lançamento Inicial**
-- 🎯 **Análise de complexidade cognitiva** baseada no **CDD (Cognitive Driven Development)**.
-- 🎨 **Notações visuais ao lado do código** para indicar complexidade.
-- 🛠️ **Diagnósticos integrados ao VS Code (`Ctrl + Shift + M`)**.
-- 🌍 **Suporte a Português e Inglês**.
-- 📑 **Configuração personalizada via JSON** para definir pesos de complexidade (pesos são personalizáveis).
-
----
-
-## **📌 Próximas Atualizações**
-📌 **O que vem por aí?**  
-🔄 **Melhorias na análise de complexidade para outras estruturas do código**.  
-📈 **Suporte aprimorado para operadores e expressões complexas**.  
-
----
-
-## **📌 Feedback e Suporte**
-📌 **Encontrou um bug ou tem sugestões?**  
-🔗 **[Abra uma issue no GitHub](https://github.com/anecrispim/php-cognitive-complexity-analyser/issues)**  
-📩 **Entre em contato** pelo e-mail: `anecrispim2@gmail.com`
-
----
-
-**Obrigado por usar o PHP Cognitive Complexity Analyzer!** 🎯🚀
+Agora você pode usar o **PHP Cognitive Complexity Analyzer** para otimizar a complexidade do seu código PHP! 🚀
