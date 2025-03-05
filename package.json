@@ -3,7 +3,7 @@
   "displayName": "PHP Cognitive Complexity Analyser",
   "description": "",
   "publisher": "AneCristineCrispim",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "engines": {
     "vscode": "^1.93.0"
   },
