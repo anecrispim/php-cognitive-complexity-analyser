@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import * as parser from 'php-parser';
 import * as path from 'path';
 import * as vscode from 'vscode';
@@ -239,7 +240,7 @@ export class ComplexityAnalyser {
 
                     // Função recursiva para percorrer a árvore de operadores binários
                     function traverseExpression(exprNode: any) {
-                        if (!exprNode) return;
+                        if (!exprNode) {return;}
 
                         if (['&&', '||', 'or', 'and', 'xor', '!'].includes(exprNode.type)) {
                             localWeight += indices['expressionComplexity']['weights']['logicalOperators'] || 0;
@@ -252,11 +253,11 @@ export class ComplexityAnalyser {
                             localWeight += indices['expressionComplexity']['weights']['ternary'] || 0;
                         }
 
-                        if (exprNode.left) traverseExpression(exprNode.left);
-                        if (exprNode.right) traverseExpression(exprNode.right);
-                        if (exprNode.test) traverseExpression(exprNode.test);
-                        if (exprNode.trueExpr) traverseExpression(exprNode.trueExpr);
-                        if (exprNode.falseExpr) traverseExpression(exprNode.falseExpr);        
+                        if (exprNode.left) {traverseExpression(exprNode.left);}
+                        if (exprNode.right) {traverseExpression(exprNode.right);}
+                        if (exprNode.test) {traverseExpression(exprNode.test);}
+                        if (exprNode.trueExpr) {traverseExpression(exprNode.trueExpr);}
+                        if (exprNode.falseExpr) {traverseExpression(exprNode.falseExpr);}        
                     }
 
                     if (node.expression.right) {
