@@ -20,7 +20,7 @@
 ---
 
 ## **📥 Instalação**
-### 📌 **Pelo VSCode Marketplace (OPÇÃO AINDA NÃO DISPONÍVEL)**
+### 📌 **Pelo VSCode Marketplace **
 1. Acesse [VSCode Marketplace](https://marketplace.visualstudio.com/).
 2. Busque por **PHP Cognitive Complexity Analyzer**.
 3. Clique em **Instalar**.
