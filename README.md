@@ -103,8 +103,6 @@ A extensão exibe **informações visuais** diretamente no editor para facilitar
 
 ---
 
-# 📌 Para Mais Informações
-
 ## 🎯 4. Para mais informações
 Se precisar de mais detalhes sobre a extensão, consulte os seguintes recursos:
 
