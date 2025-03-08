@@ -19,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         const configFilePath = path.join(rootPath, 'complexity-config.json');
-        const defaultConfigPath = path.join(context.extensionPath, 'src', 'config', 'complexity-config.json');
+        const defaultConfigPath = path.join(context.extensionPath, 'config', 'complexity-config.json');
 
         // Verifica se o arquivo de configuração já existe na raiz do projeto
         if (!fs.existsSync(configFilePath)) {

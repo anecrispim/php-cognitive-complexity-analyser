@@ -19,7 +19,7 @@ export class ConfigValidator {
     private defaultConfig: ComplexityConfig | null = null;
 
     constructor(context: vscode.ExtensionContext) {
-        const defaultConfigPath = path.join(context.extensionPath, 'src', 'config', 'complexity-config.json');
+        const defaultConfigPath = path.join(context.extensionPath, 'config', 'complexity-config.json');
         this.loadDefaultConfig(defaultConfigPath);
     }
 
